@@ -1,0 +1,39 @@
+{{ define "main" }}
+
+
+<div class="post">
+  <h1 class="post-title">
+  <a href="{{ .Permalink }}">{{ .Title | markdownify }}</a></h1>
+
+  {{- with .Content -}}
+    <div>
+      {{ . | replaceRE "(<h[1-9] id=\"([^\"]+)\".+)(</h[1-9]+>)" `${1}<a href="#${2}" class="hanchor" ariaLabel="Anchor">&#8983;</a> ${3}` | safeHTML }}
+    </div>
+  {{- end -}}
+
+  <nav class="collapse menu-nav" id="treeview-menu" aria-label="Docs navigation">
+    <ul class="menu-list">
+    {{ with .Site.GetPage "/knowledge" }}
+      {{ range .Sections.ByTitle }}
+        {{/* We don't want a menu item for specific pages listed here */}}
+        {{ if (and (ne .Title "Posts") (ne .Title "Tests") (ne .Title "Authors")) }}
+          <li class="menu-list-item">            
+            <div class="menu-chevron-link-wrapper">
+              <div class="menu-chevron"></div>
+              <a class="menu-link" aria-expanded="false" href="{{.Permalink}}">
+                {{ .Title }}
+              </a>
+            </div>
+            <!-- Using partialCached here offers significant build time speedup, as this recursive menu would otherwise be rebuilt for
+            every page! -->
+            {{ partial "menu_recursive.html" . }}
+          </li>
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  </ul>
+</nav>
+
+
+</div>
+{{ end }}
