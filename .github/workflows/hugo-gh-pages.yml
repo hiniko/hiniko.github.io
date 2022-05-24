@@ -8,7 +8,9 @@ jobs:
   deploy:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v3
+
+      - name: Checkout repos
+        uses: actions/checkout@v3
         with:
           submodules: true  # Fetch Hugo themes (true OR recursive)
           fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
@@ -19,13 +21,19 @@ jobs:
           hugo-version: 'latest'
           extended: true
 
-      - uses: actions/setup-node@v3
+      - name: Build theme
+        uses: actions/setup-node@v3
         with:
           node-version: 16.15.0
       - run: npm install
         working-directory: themes/hugo-geekdoc 
       - run: npm run build
         working-directory: themes/hugo-geekdoc 
+
+      - name: Download latest website content
+      - run: curl --location "${{secrets.WEBSITE_DATA_URL}}" --output "website_data.zip"
+      - run: unzip -d "website_data.zip"
+      - run: bin/obsidian_exporter website_data content
 
       - name: Build
         run: hugo --minify
