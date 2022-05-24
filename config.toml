@@ -8,6 +8,8 @@ theme = "hugo-geekdoc"
 
 pluralizeListTitles = false
 
+[minify]
+  disableHTML = true
 
 [params]
   geekdocCollapseAllSections = true
