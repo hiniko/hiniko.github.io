@@ -24,7 +24,7 @@ jobs:
           node-version: 16.15.0
       - run: npm install
         working-directory: themes/hugo-geekdoc 
-      - run: npm build
+      - run: npm run build
         working-directory: themes/hugo-geekdoc 
 
       - name: Build
