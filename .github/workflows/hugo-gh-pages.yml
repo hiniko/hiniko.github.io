@@ -23,7 +23,9 @@ jobs:
         with:
           node-version: 14
       - run: npm install
+        working-directory: themes/hugo-geekdoc 
       - run: npm build
+        working-directory: themes/hugo-geekdoc 
 
       - name: Build
         run: hugo --minify
