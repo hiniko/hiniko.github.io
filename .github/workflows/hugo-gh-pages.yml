@@ -21,19 +21,27 @@ jobs:
           hugo-version: 'latest'
           extended: true
 
-      - name: Build theme
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: 16.15.0
-      - run: npm install
+
+      - name: Install theme dependancies
+        run: npm install
         working-directory: themes/hugo-geekdoc 
-      - run: npm run build
+
+      - name: Build theme
+        run: npm run build
         working-directory: themes/hugo-geekdoc 
 
       - name: Download latest website content
-      - run: curl --location "${{secrets.WEBSITE_DATA_URL}}" --output "website_data.zip"
-      - run: unzip -d "website_data.zip"
-      - run: bin/obsidian_exporter website_data content
+        run: curl --location "${{secrets.WEBSITE_DATA_URL}}" --output "website_data.zip"
+
+      - name: Unzip data
+        run: unzip -d "website_data.zip"
+
+      - name: Convert Obsidian data
+        run: bin/obsidian_exporter website_data content
 
       - name: Build
         run: hugo --minify
