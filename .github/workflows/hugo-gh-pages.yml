@@ -38,7 +38,7 @@ jobs:
         run: curl --location "${{secrets.WEBSITE_DATA_URL}}" --output "website_data.zip"
 
       - name: Unzip data
-        run: unzip -d "website_data.zip"
+        run: mkdir website_data && unzip -d website_data website_data.zip
 
       - name: Convert Obsidian data
         run: bin/obsidian_exporter website_data content
