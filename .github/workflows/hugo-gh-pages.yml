@@ -21,7 +21,7 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: 17
+          node-version: 16
       - run: npm install
         working-directory: themes/hugo-geekdoc 
       - run: npm build
