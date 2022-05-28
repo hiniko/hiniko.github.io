@@ -1,5 +1,10 @@
 name: Deploy Website
 on:
+  schedule:
+    - cron: "12 12 * * *"  # Auto build at 12:!2 every day
+
+  workflow_dispatch:
+    
   push:
     branches:
       - main  # Set a branch to deploy
