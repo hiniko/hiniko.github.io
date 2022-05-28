@@ -37,11 +37,13 @@ jobs:
       - name: Download latest website content
         run: curl --location "${{secrets.WEBSITE_DATA_URL}}" --output "website_data.zip"
 
+      # For some reason the zip from dropbox causes unzip to return 2, but only on the linux builds of unzip
+      # 2 is a generic error code. It seems to output alright, so we are going to swollow the  error by always returning true
       - name: Unzip data
-        run: mkdir website_data && unzip -d website_data website_data.zip
+        run: mkdir website_data content && unzip -d website_data website_data.zip || true
 
       - name: Convert Obsidian data
-        run: bin/obsidian_exporter website_data content
+        run: bin/obsidan-export-linux website_data content
 
       - name: Build
         run: hugo --minify
