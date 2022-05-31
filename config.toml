@@ -7,9 +7,8 @@ pluralizeListTitles = false
 
 [params]
   geekdocCollapseAllSections = true
-
   # Geekdoc required configuration
-  pygmentsUseClasses = true
+  pygmentsUseClasses = false
   pygmentsCodeFences = true
   disablePathToLower = true
 
@@ -18,6 +17,18 @@ pluralizeListTitles = false
 
 # Needed for mermaid shortcodes
 [markup]
+  [markup.highlight]
+    anchorLineNos = false  
+    codeFences = true 
+    guessSyntax = true
+    lineAnchors = 'l'
+    lineNoStart = 1
+    lineNos = true
+    lineNumbersInTable = true
+    noClasses = true
+    noHl = false
+    style = 'monokai'
+    tabWidth = 2
   [markup.goldmark.renderer]
     # Needed for mermaid shortcode
     unsafe = true
