@@ -45,7 +45,7 @@ jobs:
       # For some reason the zip from dropbox causes unzip to return 2, but only on the linux builds of unzip
       # 2 is a generic error code. It seems to output alright, so we are going to swollow the  error by always returning true
       - name: Unzip data
-        run: rm -r content && mkdir website_data content && unzip -d website_data website_data.zip || true
+        run: mkdir website_data content && unzip -d website_data website_data.zip || true
 
       - name: Convert Obsidian data
         run: bin/obsidan-export-linux website_data content
