@@ -4,4 +4,5 @@ TeamCity/bin/manageDB.sh --all
 run the script for a listing of all options
 JAVA_HOME needs to be set
 back up can be found in ~/.BuildServer/backups
-Creating a systemd service for Teamcity</description></item></channel></rss>
+Creating a systemd service for Teamcity
+Teamcity uses it&amp;rsquo;s own process management but it is still nice to be able to use systemd as with other services.</description></item></channel></rss>
