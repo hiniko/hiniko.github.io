@@ -1,7 +1,7 @@
 name: Deploy Website
 on:
   schedule:
-    - cron: "5 9-23/1 * * "  # Auto build at 5 past the hour every hour from 9-23
+    - cron: "5 9-23 * * "  # Auto build at 5 past the hour every hour from 9-23
 
   workflow_dispatch:
     
