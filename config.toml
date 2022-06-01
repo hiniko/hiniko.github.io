@@ -4,6 +4,7 @@ title = "Shermans's Notes"
 paginate = 5
 theme = "hugo-geekdoc"
 pluralizeListTitles = false
+ignoreFiles = ['templates/*']
 
 [params]
   geekdocCollapseAllSections = true
