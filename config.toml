@@ -16,6 +16,8 @@ ignoreFiles = ['templates/*']
   # Required if you want to render robots.txt template
   enableRobotsTXT = true
 
+  geekdocLogo = "sherm.png"
+
 # Needed for mermaid shortcodes
 [markup]
   [markup.highlight]
