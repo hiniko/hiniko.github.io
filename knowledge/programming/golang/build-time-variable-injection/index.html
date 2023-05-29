@@ -1,4 +1,4 @@
-<!doctype html><html lang=en class=color-toggle-hidden><head><meta charset=utf-8><meta name=referrer content="no-referrer"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=color-scheme content="light dark"><meta name=generator content="Hugo 0.112.3"><meta name=description content="Full article: https://www.digitalocean.com/community/tutorials/using-ldflags-to-set-version-information-for-go-applications
+<!doctype html><html lang=en class=color-toggle-hidden><head><meta charset=utf-8><meta name=referrer content="no-referrer"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=color-scheme content="light dark"><meta name=generator content="Hugo 0.112.4"><meta name=description content="Full article: https://www.digitalocean.com/community/tutorials/using-ldflags-to-set-version-information-for-go-applications
 TLDR:
 Given some var in a file&#34;
 1 2 3 4 5 6 7 8 9 10 11 package main var ( Version = &#34;0.0.1&#34; Commit = &#34;DEADBEEF&#34; ) func main() { fmt.Printf(&#34;Version: %s&#34;, Version) fmt.Printf(&#34;Commit: %s&#34;, Commit) } The following will overwrite them at build time (also works with go run)
