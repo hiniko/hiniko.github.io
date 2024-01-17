@@ -1,14 +1,10 @@
 name: Deploy Website
 on:
-  schedule:
-    - cron: "14 3 * * *"  # Build once a day in the morning
-
   workflow_dispatch:
     
   push:
     branches:
-      - main  # Set a branch to deploy
-
+      - main  
 jobs:
   deploy:
     runs-on: ubuntu-20.04
