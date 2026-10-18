@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<title>Sherman Rose CV</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  @page { size: A4; margin: 0; }
+  :root {
+    --side-bg: #2f3236;
+    --side-text: #e6e4df;
+    --side-muted: #b3b0a8;
+    --ink: #26282b;
+    --muted: #6a6d72;
+    --accent: #5f8a8b;   /* the one muted accent */
+    --rule: #d3d6d8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #fff; }
+  body {
+    font-family: "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    font-size: 8.3pt;
+    line-height: 1.36;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  .page {
+    width: 210mm; height: 297mm; overflow: hidden;
+    display: grid; grid-template-columns: 33% 67%;
+    page-break-after: always; break-after: page;
+  }
+  .page:last-child { page-break-after: auto; break-after: auto; }
+
+  /* sidebar */
+  .side { background: var(--side-bg); color: var(--side-text); padding: 7mm 7mm 8mm 8mm; display: flex; flex-direction: column; }
+  .side h1 { font-size: 21pt; font-weight: 500; letter-spacing: 0.01em; line-height: 1.1; }
+  .side .title { margin-top: 2.5mm; font-size: 9pt; color: var(--side-muted); line-height: 1.3; }
+  .side .cont { font-size: 9pt; color: var(--side-muted); }
+  .side h2 {
+    font-size: 8pt; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+    color: #9fc1c1; margin: 6mm 0 2mm;
+  }
+  .side p { margin-bottom: 2mm; }
+  .side ul { list-style: none; }
+  .side li { margin-bottom: 1.6mm; }
+  .side b { font-weight: 600; color: #fff; }
+  .side .note { color: var(--side-muted); font-size: 7.6pt; }
+  .side a { color: inherit; text-decoration: none; }
+  .side .push { margin-top: auto; }
+  .values li { margin-bottom: 1.3mm; }
+  .skills p { margin-bottom: 1.8mm; }
+  .skills b::after { content: ": "; }
+
+  /* main column */
+  .main { padding: 7mm 6mm 8mm 6mm; }
+  .main h2 {
+    font-size: 8pt; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 3mm;
+  }
+  .timeline { border-left: 1px solid var(--rule); padding-left: 5mm; }
+  .job { position: relative; margin-bottom: 4.6mm; }
+  .job::before {
+    content: ""; position: absolute; left: calc(-5mm - 3px); top: 1.3mm;
+    width: 5px; height: 5px; border-radius: 50%; background: var(--accent);
+  }
+  .when { font-size: 7.8pt; color: var(--muted); letter-spacing: 0.02em; }
+  .role { font-size: 9.6pt; font-weight: 600; margin-top: 0.3mm; }
+  .role .co { font-weight: 400; }
+  .ctx { color: var(--muted); font-size: 7.9pt; margin: 0.4mm 0 1.4mm; }
+  .grp { font-weight: 600; font-size: 8.3pt; margin: 2mm 0 0.7mm; }
+  .grp .sub { font-weight: 400; color: var(--muted); }
+  .job ul { padding-left: 3.6mm; }
+  .job li { margin-bottom: 0.8mm; }
+  .job li::marker { color: var(--accent); }
+  .stack { color: var(--muted); font-size: 7.8pt; margin-top: 1.2mm; }
+  .older p { margin-bottom: 1.1mm; }
+
+  .explore li { color: var(--side-text); }
+
+  @media screen { .sheets { overflow-x: auto; } .cv-nav { padding: 0 16px; } html, body { background:#0d0f14; } .page { background:#fff; } .cv-nav { max-width: 210mm; margin: 16px auto; font: 14px system-ui; color:#8b94a7; } .cv-nav a { color:#7ee0c3; } .page { margin: 0 auto; } }
+  @media print { .no-print { display: none !important; } }
+</style>
+</head>
+<body>
+<nav class="cv-nav no-print"><a href="/">&larr; shermanrose.uk</a> &middot; <a href="/cv/sherman-rose-cv.pdf">Download PDF</a></nav>
+
+<div class="sheets">
+<!-- ============ PAGE 1 ============ -->
+<section class="page">
+  <aside class="side">
+    <h1>Sherman Rose</h1>
+    <div class="title">Senior Software Engineer — Backend &amp; Platform</div>
+
+    <h2>Profile</h2>
+    <p>Nearly fifteen years building software, starting with the tools I wrote to do my Linux support job. Today I build backend APIs and infrastructure day to day, reaching into data on one side and AI enablement on the other. .NET for the last two years, Go for nearly three, on PostgreSQL, messaging and Terraform/GCP.</p>
+    <p>Writing code is close to solved. The unsolved part is designing systems that stay testable, and keeping velocity without losing stability. Code has no value in itself: its value is what it enables, or what people believe it enables. I treat it as the means to that end, and manage it so it never gets in the way.</p>
+    <p>I work AI-first. Agents do most of the typing; I design the system, the gates they work inside and the checks that prove their output, and I own the calls that can't be undone.</p>
+    <p>Ask me why, in the era of AI, everything we knew about building software matters more, not less.</p>
+
+    <h2>How I work with AI</h2>
+    <ul class="values">
+      <li><b>Verify, don't trust.</b> Tests and checks, not vibes.</li>
+      <li><b>Humans own the irreversible.</b> Specs, merges, releases.</li>
+      <li><b>Specs before code.</b></li>
+      <li><b>Cheapest model that can do the job.</b></li>
+      <li><b>Encode judgement as skills,</b> not tribal knowledge.</li>
+      <li><b>One write path,</b> hard boundaries.</li>
+    </ul>
+
+    <h2>What I'm exploring</h2>
+    <ul class="values explore">
+      <li>Hem: a true ADLC, one spec graph and one write path for agents and humans</li>
+      <li>Ticket-to-PR agents where only a human approves and merges</li>
+      <li>Multi-agent orchestration across parallel worktrees</li>
+      <li>Model tiering and the cost of agentic work</li>
+      <li>Verification gates for agent output</li>
+    </ul>
+
+    <div class="push">
+      <h2>Contact</h2>
+      <p><a href="mailto:sherman@shermanrose.uk">sherman@shermanrose.uk</a><br>
+      <a href="https://github.com/hiniko">github.com/hiniko</a><br>
+      United Kingdom</p>
+    </div>
+  </aside>
+
+  <main class="main">
+    <h2>Experience</h2>
+    <div class="timeline">
+      <div class="job">
+        <div class="when">Oct 2024 – Present</div>
+        <div class="role">Senior Software Engineer, Backend &amp; Platform <span class="co">— Catches</span></div>
+        <div class="ctx">Early-stage AI start-up (B2B try-on and media generation). Day job: backend APIs and infrastructure. In practice: helping bring up the platform across the whole stack, from the data warehouse to company-wide AI enablement.</div>
+
+        <div class="grp">Platform &amp; architecture</div>
+        <ul>
+          <li>Go-to engineer for <b>requirements gathering and systems design on cross-team projects</b>: regularly asked into other teams' design sessions, and designed and helped spec the systems they build on.</li>
+          <li>Designed the <b>media-generation core</b> of the platform: set its architecture and principles, held them through review, and moved render traffic onto it with a parity suite against the previous renders.</li>
+          <li>Built the <b>asset-pipeline versioning system</b>: a generalised versioned-asset model and the registration API the content pipeline publishes through. Designed and built bulk render and AI job handling end to end, with live progress.</li>
+          <li><b>Largest contributor to the .NET backend</b>, author of over half its current code across APIs, services, consumers, data and tests.</li>
+          <li>Built a <b>hermetic black-box test environment</b> for rapid AI and API correctness testing: it catches breaking API changes before they ship, so the team can react early, deliver faster and move towards continuous deployment. Top author of the release and CI pipeline.</li>
+          <li>Also: led an API migration from Go to .NET; layered configuration; audit logging with PII redaction; notifications; entitlements; accounts and tenants.</li>
+        </ul>
+
+        <div class="grp">Infrastructure &amp; shared services</div>
+        <ul>
+          <li>Built <b>monitoring as code</b> in Terraform: 5xx and latency monitors, alert routing and a standard dashboard for every platform environment; redesigned the RabbitMQ queue monitors to cut alert noise.</li>
+          <li><b>Driving cross-team ownership of shared services</b> (RabbitMQ, monitoring): team-owned queue definitions with alerts routed to the owning team. Provisioned GCP infrastructure (storage, load balancers, DNS, Kubernetes consumers).</li>
+        </ul>
+
+        <div class="grp">Data</div>
+        <ul>
+          <li><b>Founded the company data warehouse</b>: dbt on BigQuery, medallion conventions, CI/CD, docs and a Lightdash semantic layer; a render-job <b>cost model</b>; platform-telemetry ingestion (Pub/Sub to BigQuery) with its Terraform. A dedicated data engineer now builds on these foundations.</li>
+        </ul>
+
+        <div class="grp">Admin Portal</div>
+        <ul>
+          <li><b>Rebuilt the Admin Portal from first principles</b> in the shared Next.js monorepo and wrote most of it; other engineers now build on its architecture. Over a hundred routes covering tenant, user and role administration, product and render management, and platform settings.</li>
+          <li>A highly reusable <b>MVVM/SPA-style architecture</b>: most routes are shared components that work as soon as new models are added, so new areas come up quickly. <b>Designed AI-skill-first</b>, so other team members can add their features as fast as possible. Removed its server actions after real-user monitoring showed the latency cost.</li>
+        </ul>
+
+        <div class="grp">Agentic engineering &amp; enablement</div>
+        <ul>
+          <li>Authored <b>~30 agent skills</b> across the backend platform, the Admin Portal and the company plugin repo, so engineers can work quickly in familiar and unfamiliar codebases alike: from API, data and messaging conventions to a spec-gated, eval-tested feature workflow. Includes a skill-authoring standard and a drift check that keeps agent guidance in step with the code.</li>
+          <li>Built the company's <b>Claude plugin platform</b>: lint-gated, versioned per plugin and published org-wide to Claude Code and Claude Desktop. Now being picked up across the company: the first plugin from another engineer has already shipped.</li>
+          <li>Wrote a cost-routing skill that sends agent work to the cheapest model that can do the job.</li>
+        </ul>
+        <div class="stack">C#/.NET, ASP.NET Core, EF Core, Aspire, Go, PostgreSQL, RabbitMQ, Redis, Terraform/GCP, dbt/BigQuery, Next.js/React, Datadog, Claude Code.</div>
+      </div>
+    </div>
+  </main>
+</section>
+
+<!-- ============ PAGE 2 ============ -->
+<section class="page">
+  <aside class="side">
+    <div class="cont">Sherman Rose</div>
+
+    <h2 style="margin-top:5mm">Side projects</h2>
+    <p class="note" style="margin-bottom:2.5mm">Research on the same thesis. Private repos/demos available on request.</p>
+    <ul>
+      <li><b>Hem</b> — my take on AI-first product development through a true ADLC (agentic development lifecycle) system, rather than several systems patched together. Specs, tickets, agents, code and verification in one closed loop. Its core is the spec layer as one typed graph, with a single write gate that agents and humans both go through.</li>
+      <li><b>autoplane + Plane skills</b> — tickets as the human↔agent contract. Agents take only tickets a human marked Ready; a circuit breaker tells an outage from a red build; three red verifies and it goes back to a human.</li>
+      <li><b>Cobble</b> — a game-systems modelling language that unites simulation and statistical-analysis methods to prove out game systems before opening an engine, tuning balance and feel as a process separate from building the game. ANTLR grammar, LSP and VS Code extension.</li>
+      <li><b>MusicBox</b> — exports my Ableton Move sessions and plays them in the browser, with bar-quantised clip launching, per-track mixing and DJ-style master effects.</li>
+      <li><b>ferret</b> &amp; <b>ExtensibleMigrations</b> — public .NET libraries on NuGet: Postgres-first paging and search; custom EF Core migrations.</li>
+      <li>Also: GitOps (ArgoCD) k3s home cluster, spec-generated Blazor port of shadcn/ui, event-sourced offline-first apps.</li>
+    </ul>
+
+    <h2>Skills</h2>
+    <div class="skills">
+      <p><b>Languages</b>C#/.NET, Go, TypeScript, SQL, Python, Kotlin, Java, Ruby</p>
+      <p><b>Backend &amp; architecture</b>ASP.NET Core, EF Core, .NET Aspire, PostgreSQL, RabbitMQ, MassTransit, Redis, distributed systems, event-driven design, system design</p>
+      <p><b>Infra &amp; delivery</b>Terraform, GCP, Kubernetes, Docker, GitHub Actions, CI/CD, Datadog, observability</p>
+      <p><b>Data</b>BigQuery, dbt, Pub/Sub, Dapper</p>
+      <p><b>AI-assisted development</b>Claude Code, agent skills/plugins, multi-agent orchestration (Orca), MCP, spec-driven development, model tiering/cost control</p>
+      <p><b>Frontend</b>Next.js, React, TypeScript</p>
+      <p><b>Ways of working</b>code review, mentoring, technical leadership, developer experience</p>
+    </div>
+
+    <p class="push note">Head of engineering reference available on request.</p>
+  </aside>
+
+  <main class="main">
+    <h2>Experience, continued</h2>
+    <div class="timeline">
+      <div class="job">
+        <div class="when">2022 – 2024</div>
+        <div class="role">Senior Software Engineer <span class="co">— Improbable Worlds</span></div>
+        <div class="ctx">Promoted from Software Engineer. Distributed-systems and metaverse technology.</div>
+        <div class="grp">Platform Operations &amp; Web Platform</div>
+        <ul>
+          <li>Built and operated an end-to-end <b>telemetry and analytics platform</b> over live events (MLB, Yuga Labs), across web, Unreal and backend sources: per-project Terraform, time-partitioning, and a dbt/Airflow → marts → Looker Studio pipeline several teams self-served from.</li>
+          <li>Towards the end, led the company's data and intelligence effort without the title: set direction and drove the telemetry build-out and analytics processing.</li>
+          <li>Productised a company side project for NFT indexing and tooling, and took on management of company infrastructure through Terraform.</li>
+          <li>Line manager for several developers, managing and mentoring them in their careers (including two juniors and a career-changer from an unrelated discipline); led a workstream through one of them.</li>
+        </ul>
+        <div class="grp">IT Engineering</div>
+        <ul>
+          <li>Built internal tooling in Go, Terraform and Kubernetes: joiner-mover-leaver software, Slack-driven Perforce user management, DocuSign and Google Workspace integrations, with CI/CD for each. <b>Promoted to Senior</b> on this work.</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="when">2020 – 2022</div>
+        <div class="role">Developer <span class="co">— Wushu Studios</span></div>
+        <ul>
+          <li>Unreal Engine C++ on the UI refresh of PS5 <i>Destruction AllStars</i>, including live-service work; root-caused team-blocking issues.</li>
+          <li>Owned studio IT and infrastructure: a Go Slack bot that became the IT front door, Grafana and Prometheus monitoring managed by Ansible. Hired and onboarded the first two dedicated IT staff.</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="when">2016 – 2020</div>
+        <div class="role">Server Developer <span class="co">— vTime</span></div>
+        <ul>
+          <li>Developed and maintained the Java (later Kotlin) backend for a social VR/AR platform: geolocation search, generalised permissions and notifications, realtime messaging and Kinesis analytics ingestion.</li>
+          <li>Led the move from SVN to Git/GitLab with better CI and Gradle builds, negotiating concessions for long-tenured artists on legacy tools; it stuck. Cut test runs from 1h20m+ to under 20 minutes.</li>
+          <li>Built Vue admin apps and integrations with Mailchimp, AWS SNS and Apple IAP. Mentored a developer from a non-engineering background.</li>
+        </ul>
+      </div>
+
+      <div class="job older">
+        <div class="when">2012 – 2016</div>
+        <div class="role" style="margin-bottom:1.2mm">Earlier roles</div>
+        <p><b>Software Engineer — Faria Education</b> (2016). Full stack on student submission systems in Rails, AngularJS and JRuby on AWS.</p>
+        <p><b>Web Developer — Common Space</b> (2016, contract). PHP plugins and Docker-based deployment.</p>
+        <p><b>Linux Support Engineer — Bytemark Hosting</b> (2012–2016). Wrote the software around the job: monitoring and triage dashboards the team kept extending, ticketing-system extensions and service tooling, alongside 24-hour on-call and <code>strace</code>-level diagnosis. LINX LAIT-1 (2013).</p>
+      </div>
+    </div>
+
+    <h2 style="margin-top:3mm">Education</h2>
+    <div class="timeline">
+      <div class="job">
+        <div class="when">2008 – 2012</div>
+        <div class="role">BSc (Hons) Computer Science, First Class <span class="co">— Keele University</span></div>
+        <div class="ctx" style="margin-bottom:0">Technical lead and treasurer of the student radio station.</div>
+      </div>
+    </div>
+  </main>
+</section>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>loop jam · shermanrose.uk</title><link rel="icon" href="/favicon.ico">
+<link rel="stylesheet" href="/css/site.css">
+<style>
+  .jam{max-width:860px;margin:40px auto;padding:0 16px;position:relative;z-index:1}
+  .grid{display:grid;gap:8px;margin-top:16px}
+  .cell{aspect-ratio:1;border-radius:8px;border:1px solid var(--line);background:var(--glass);color:var(--dim);cursor:pointer;font:12px system-ui}
+  .cell.on{background:var(--a1);color:#062019;border-color:var(--a1)}
+  .cell:disabled{opacity:.4;cursor:default}
+  .row-label{font-size:12px;color:var(--dim);align-self:center;text-shadow:0 0 12px var(--bg),0 0 24px var(--bg)}
+  select,button{font:14px system-ui;background:var(--glass);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:8px 12px}
+</style></head>
+<body>
+<header class="bar glass-bar"><a class="logo" href="/">shermanrose.uk</a><nav><a href="/#toys">toys</a></nav></header>
+<main class="jam">
+  <div class="glass panel">
+    <h2>loop jam</h2>
+    <p>Tap a cell to launch that loop on its track. Changes land on the next bar, so it always sounds right.</p>
+    <p style="margin-top:12px"><select id="set" aria-label="Set"></select> <button id="start">▶ start</button> <button id="stop">■ stop</button></p>
+    <p id="status" class="more" aria-live="polite"></p>
+  </div>
+  <div id="grid" class="grid"></div>
+</main>
+<script type="module" src="./loop-jam.js"></script>
+</body></html>
