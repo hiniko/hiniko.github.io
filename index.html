@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sherman Rose: engineer, musician, toymaker</title>
+  <meta name="description" content="Software engineer. Platform, backend, frontend, games, and whatever else the problem needs. Also music and toys.">
+  <link rel="icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#0d0f14">
+  <link rel="stylesheet" href="/css/site.css">
+  <script type="module" src="/js/main.js"></script>
+</head>
+<body>
+  <canvas id="bg" aria-hidden="true"></canvas>
+
+  <header class="bar glass-bar">
+    <a class="logo" href="/">shermanrose.uk</a>
+    <nav aria-label="Sections">
+      <a href="#work">work</a><a href="#music">music</a><a href="#toys">toys</a><a href="/cv/">cv</a>
+    </nav>
+    <div id="jukebox" class="jukebox"></div>
+  </header>
+
+  <div id="occasion-banner" class="glass occasion-banner" hidden></div>
+
+  <div class="layout">
+    <aside class="intro">
+      <h1 class="name">Sherman<br>Rose</h1>
+      <p class="pitch">Software engineer. Also creator of <em>music</em>, <em>software toys</em>, and an avid player of <em>games</em></p>
+      <div class="btns">
+        <a class="btn primary" href="mailto:sherman@shermanrose.uk">Hire me</a>
+        <a class="btn" href="/cv/">CV</a>
+        <a class="btn" href="https://github.com/hiniko">GitHub</a>
+      </div>
+      <div class="about">
+        <p>In fifteen years I've worked on platforms, backends, web frontends, Unreal, social VR, live-event analytics, internal tooling and now AI-first engineering.</p>
+        <p>With modern tooling the code is the easy part; what matters is sensibility, domain knowledge, imagination and architecture.</p>
+        <p>This site, its toys and my GitHub are the evidence. Outside work I make loop-based electronic music.</p>
+      </div>
+      <nav class="intro-nav" aria-label="On this page"><a href="#explore">explore</a> · <a href="#work">work</a> · <a href="#music">music</a> · <a href="#toys">toys</a></nav>
+    </aside>
+
+    <main class="content">
+      <section id="explore" class="glass panel">
+        <h2>Explore</h2>
+        <ul id="explore-list" class="explore-list"></ul>
+      </section>
+
+      <section id="work">
+        <h2>Projects</h2>
+        <div id="projects-grid" class="cards"></div>
+        <p class="more"><a href="https://github.com/hiniko">More on GitHub →</a></p>
+      </section>
+
+      <section id="music" class="glass panel">
+        <h2>Music</h2>
+        <p>The background visualisation is one of my Ableton mvoe tracks: four stems, split into lows, mids and highs. Unmute the jukebox up top to hear it.</p>
+        <p><a href="https://soundcloud.com/hiniko">SoundCloud</a> · <a href="https://musicbox.sherms.uk">the full music box</a></p>
+      </section>
+
+      <section id="toys">
+        <h2>Toys</h2>
+        <div id="toys-grid" class="cards">
+          <!-- loop jam hidden until reworked: <a class="card glass" href="/toys/loop-jam/"><b>loop jam</b><p>Launch my loops. Everything stays on the bar.</p></a> -->
+          <a class="card glass" href="#" data-action="tune"><b>wave knobs</b><p>Tune the background waveforms live, and share the settings.</p></a>
+          <div class="card glass teaser"><b>???</b><p>Some toys have to be found.</p></div>
+        </div>
+      </section>
+
+      <section id="older" hidden><!-- ponytail: slot reserved, unhide when there is content --></section>
+
+      <footer class="footer"><a href="mailto:sherman@shermanrose.uk">sherman@shermanrose.uk</a> · <a href="https://github.com/hiniko">github</a></footer>
+    </main>
+  </div>
+</body>
+</html>
