@@ -51,9 +51,9 @@ function bandColor(i) {
 
 export const modes = { lissajous: false };   // konami egg
 export const overlays = [];   // occasions push fn(ctx, { w, h, t, m, lineY })
-let canvas, ctx, w = 0, h = 0, dpr = 1, morph = 0, raf = 0, lastT = 0, lastBands = null, fresh = true;
+let canvas, ctx, w = 0, h = 0, dpr = 1, morph = 0, raf = 0, lastT = 0, lastBands = null, fresh = true, fade = 2;
 const gains = [1, 1, 1, 1];
-let bufN = 0, win, sm, per, mix, shp, mixPeak = 0, frac = 0, lastI0 = -1;   // reused per-line buffers, sized by TUNE.timebase
+let bufN = 0, win, sm, per, from, mix, shp, mixPeak = 0, frac = 0, lastI0 = -1;   // reused per-line buffers, sized by TUNE.timebase
 const bufs = n => Array.from({ length: LINE_COUNT }, () => new Float32Array(n));
 let bg = '#0d0f14';
 const ys = new Float32Array(LINE_COUNT + 1);
@@ -67,15 +67,18 @@ function resize() {
   if (reduced.matches) draw(0);
 }
 
-function prep() {   // new bands: crossfade from sines again, restart persistence
+function prep() {   // new bands: first load fades in from sines; later scenes/sets crossfade from what's on screen
   if (state.bands === lastBands) return;
+  const cont = lastBands && state.bands && bufN;
+  if (cont) for (let i = 0; i < LINE_COUNT; i++) from[i].set(per[i]);
+  fade = cont ? 0.4 : 2;
   lastBands = state.bands; morph = 0; fresh = true;
 }
 
 function shapes(t, dt) {
   // timebase is tuned for wide screens; below 1200px scale it with width so phones keep the same point density
   const n = Math.max(64, Math.round(TUNE.timebase * Math.min(1, w / 1200)));
-  if (n !== bufN) { bufN = n; win = bufs(n); sm = bufs(n); per = bufs(n); shp = bufs(n); mix = new Float32Array(n); fresh = true; }
+  if (n !== bufN) { bufN = n; win = bufs(n); sm = bufs(n); per = bufs(n); from = bufs(n); shp = bufs(n); mix = new Float32Array(n); fresh = true; }
   prep();
   const still = reduced.matches, k = still ? 0 : TUNE.persist;
   const bands = state.bands;
@@ -86,9 +89,9 @@ function shapes(t, dt) {
   const step = lastI0 < 0 ? 0 : (i0 - lastI0 + len) % len;   // points scrolled since last frame
   if (step > n / 2) fresh = true;   // jump (new scene/loop reset): restart persistence
   lastI0 = bands ? i0 : -1;
-  morph = Math.min(1, morph + dt / 2);   // ~2s regardless of refresh rate
+  morph = Math.min(1, morph + dt / fade);   // seconds, regardless of refresh rate
   for (let i = 0; i < LINE_COUNT; i++) {
-    let shape = sineLine(i, n, still ? 0 : t);
+    let shape = fade < 2 ? from[i] : sineLine(i, n, still ? 0 : t);
     if (bands) {
       let b = windowAt(bands[i], pos, n, win[i]);
       if (TUNE.smooth > 0) b = smoothInto(b, Math.round(TUNE.smooth), sm[i]);
