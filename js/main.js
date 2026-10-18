@@ -5,6 +5,8 @@ import { init as projects } from './projects.js';
 import { init as explore } from './explore.js';
 import { init as occasions } from './occasions.js';
 import { init as eggs } from './eggs.js';
+import { init as tabs } from './tabs.js';
+tabs();   // before waves: sets the first look
 waves();
 audio();
 jukebox();

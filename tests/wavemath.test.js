@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { shade, LINE_COUNT, sineLine, progress, mergeAt, tiltAt, perspective, reachFor, rowWidth, lineY, blend, mixOf, mixInto, windowAt, shiftInto, downsample, smoothInto, persistInto } from '../js/lib/wavemath.js';
+import { shade, LINE_COUNT, sineLine, easeStep, tweenLook, perspective, reachFor, rowWidth, lineY, blend, mixOf, mixInto, windowAt, shiftInto, downsample, smoothInto, persistInto } from '../js/lib/wavemath.js';
 
 test('sineLine is bounded and distinct per line', () => {
   const a = sineLine(0, 256, 0), b = sineLine(1, 256, 0);
@@ -9,12 +9,14 @@ test('sineLine is bounded and distinct per line', () => {
   assert.notDeepEqual(a, b);
 });
 
-test('progress: 0 at top, 1 at bottom, clamped', () => {
-  assert.equal(progress(0, 4000, 800), 0);
-  assert.equal(progress(3200, 4000, 800), 1);
-  assert.equal(progress(4000, 4000, 800), 1);
-  assert.ok(Math.abs(progress(1600, 4000, 800) - 0.5) < 1e-9);
-  assert.equal(progress(0, 800, 800), 1);
+test('easeStep: frame-rate independent, converges, snaps', () => {
+  let a = 0, b = 0;
+  for (let i = 0; i < 48; i++) a = easeStep(a, 1, 1 / 60);    // 0.8s at 60fps
+  for (let i = 0; i < 24; i++) b = easeStep(b, 1, 1 / 30);    // 0.8s at 30fps
+  assert.ok(Math.abs(a - b) < 1e-9 && a > 0.9 && a < 1);
+  assert.equal(easeStep(0.9995, 1, 0.016), 1);
+  assert.equal(easeStep(0.3, 0.3, 0.016), 0.3);
+  assert.equal(easeStep(0, 1, 0), 0);
 });
 
 test('lineY spreads at p=0 and converges on centre at p=1', () => {
@@ -82,18 +84,14 @@ test('lineY takes a spread parameter', () => {
   assert.equal(lineY(0, 0, 1000), lineY(0, 0, 1000, 0.84));
 });
 
-test('mergeAt: merged at top, open from openAt on and stays open', () => {
-  assert.ok(Math.abs(mergeAt(0) - 1) < 1e-9 && Math.abs(mergeAt(0.5)) < 1e-9 && mergeAt(1) === 0);
-  assert.ok(Math.abs(mergeAt(0.3, 0.3)) < 1e-9 && mergeAt(0.9, 0.3) === 0);
-  assert.ok(mergeAt(0.25) < 1 && mergeAt(0.25) > 0);
-});
-
-test('tiltAt: 0 until from, eases to 1 at to, stays 1', () => {
-  assert.equal(tiltAt(0, 0.55, 0.85), 0);
-  assert.equal(tiltAt(0.55, 0.55, 0.85), 0);
-  assert.equal(tiltAt(0.85, 0.55, 0.85), 1);
-  assert.equal(tiltAt(1, 0.55, 0.85), 1);
-  assert.ok(tiltAt(0.7, 0.55, 0.85) > 0 && tiltAt(0.7, 0.55, 0.85) < 1);
+test('tweenLook: numbers ease, non-numbers snap, omitted keys head to base', () => {
+  const look = { merge: 0, tilt: 0, amp: 0.4, flag: false };
+  tweenLook(look, { merge: 1, flag: true }, { amp: 0.8 }, 0.27);
+  assert.ok(look.merge > 0 && look.merge < 1 && look.tilt === 0);   // eased, not jumped; tilt has no goal so stays put
+  assert.ok(look.amp > 0.4 && look.amp < 0.8);                      // not named by the target: falls back to base
+  assert.equal(look.flag, true);
+  tweenLook(look, { merge: 1, flag: true }, { amp: 0.8 }, Infinity);
+  assert.deepEqual(look, { merge: 1, tilt: 0, amp: 0.8, flag: true });
 });
 
 test('perspective: 0 at horizon, 1 at viewer, rows spread out as they near', () => {

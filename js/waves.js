@@ -1,5 +1,5 @@
 import { state, onChange } from './state.js';
-import { shade, LINE_COUNT, sineLine, progress, mergeAt, tiltAt, perspective, reachFor, rowWidth, lineY, blend, mixInto, windowAt, shiftInto, smoothInto, persistInto } from './lib/wavemath.js';
+import { shade, LINE_COUNT, sineLine, tweenLook, perspective, reachFor, rowWidth, lineY, blend, mixInto, windowAt, shiftInto, smoothInto, persistInto } from './lib/wavemath.js';
 
 // live tuning: read every frame; the ?tune / "wave knobs" panel edits it, and its JSON pastes straight over this literal
 export const TUNE = {
@@ -17,12 +17,7 @@ export const TUNE = {
   release: 0.85,      // seconds, loudness fall
   lineWidth: 0.5,      // multiplier on the per-band stroke width
   mergedWidth: 1.5,  // stroke width (px) of the merged line; lines blend toward it as they merge
-  openAt: 0.34,       // scroll position (0..1) where the 12 lines are fully open; merged above it
-  openWidth: 1.5,      // >1 keeps the lines open longer around openAt, <1 closes them sooner (bell exponent 1/openWidth)
   alpha: 0.9,          // multiplier on the per-band opacity
-  fly: true,         // mid-page perspective flyover on/off
-  flyFrom: 0.37,     // scroll position where the lanes start tilting into the landscape (kept > openAt)
-  flyTo: 0.78,       // scroll position where the landscape is complete; it then stays to the bottom
   bandShade: 0.29,  // colour step between a stem's low/mid/high lines: low darker, high lighter (0 = same colour)
   camera: 0.69,      // camera distance for the landscape: larger = further back = flatter, more even rows, smaller front rows
   horizon: 0.59,     // horizon line as a fraction of viewport height
@@ -30,6 +25,11 @@ export const TUNE = {
   frontWidth: 1,  // landscape row width at the front; below backWidth = wider at the back
   depthFade: 0.15,    // 0..1, how much rows fade out toward the horizon
 };
+// Wave look per tab. Switching tabs tweens every value straight to the new tab's look.
+// merge: 1 = one line, 0 = open lanes. tilt: 0 = flat, 1 = landscape. Any other numeric TUNE key overrides the base for that tab.
+export const TAB_LOOKS = { work: { merge: 1, tilt: 0 }, music: { merge: 0, tilt: 0 }, toys: { merge: 0, tilt: 1 } };
+export const view = { name: 'work', goal: TAB_LOOKS.work };   // the active tab and its look; tabs.js sets it, the wave knobs edit goal live
+export const look = { merge: 1, tilt: 0 };   // live values, tweened toward view.goal every frame
 export const DEFAULTS = Object.freeze({ ...TUNE });
 const GAIN_FLOOR = 0.55;     // line amplitude factor at silence
 
@@ -50,7 +50,7 @@ function bandColor(i) {
 }
 
 export const modes = { lissajous: false };   // konami egg
-export const overlays = [];   // occasions push fn(ctx, { w, h, t, p, m, lineY })
+export const overlays = [];   // occasions push fn(ctx, { w, h, t, m, lineY })
 let canvas, ctx, w = 0, h = 0, dpr = 1, morph = 0, raf = 0, lastT = 0, lastBands = null, fresh = true;
 const gains = [1, 1, 1, 1];
 let bufN = 0, win, sm, per, mix, shp, mixPeak = 0, frac = 0, lastI0 = -1;   // reused per-line buffers, sized by TUNE.timebase
@@ -108,12 +108,12 @@ function updateGains(dt) {
 }
 
 export function draw(t) {
-  const p = state.p, m = mergeAt(p, TUNE.openAt, TUNE.openWidth);
   const dt = Math.min(0.1, Math.max(0, t - lastT));   // R10
+  tweenLook(look, view.goal, TUNE, reduced.matches ? Infinity : dt);
+  const K = { ...TUNE, ...look }, m = look.merge, ty = look.tilt;   // K: base knobs plus this tab's tweened overrides
   const lines = shapes(t, dt);
   updateGains(dt);
   lastT = t;
-  const ty = TUNE.fly ? tiltAt(p, Math.max(TUNE.flyFrom, TUNE.openAt), Math.max(TUNE.flyTo, TUNE.flyFrom, TUNE.openAt) + 0.01) : 0;
   if (modes.lissajous) {
     ctx.clearRect(0, 0, w, h);
     const r = Math.min(w, h) * 0.35;
@@ -131,16 +131,16 @@ export function draw(t) {
   mixPeak = raw > mixPeak ? raw : mixPeak + (raw - mixPeak) * (1 - Math.exp(-dt / 1));
   if (mixPeak > 0) for (let j = 0; j < mix.length; j++) mix[j] /= mixPeak;
   ctx.clearRect(0, 0, w, h);
-  const hy = h * TUNE.horizon, spread = (h * TUNE.spread / LINE_COUNT) * TUNE.amp, reach = reachFor(h, hy, spread / h), merged = h * TUNE.ampMerged;
+  const hy = h * K.horizon, spread = (h * K.spread / LINE_COUNT) * K.amp, reach = reachFor(h, hy, spread / h), merged = h * K.ampMerged;
   const amp = spread + (merged - spread) * m;
-  for (let i = 0; i < LINE_COUNT; i++) ys[i] = lineY(i, m, h, TUNE.spread) * (1 - ty) + (hy + reach * perspective(i / (LINE_COUNT - 1), TUNE.camera)) * ty;
+  for (let i = 0; i < LINE_COUNT; i++) ys[i] = lineY(i, m, h, K.spread) * (1 - ty) + (hy + reach * perspective(i / (LINE_COUNT - 1), K.camera)) * ty;
   ys[LINE_COUNT] = h * 2;
   for (let i = 0; i < LINE_COUNT; i++) {   // back (top lane) to front
-    const g = perspective(i / (LINE_COUNT - 1), TUNE.camera), st = BAND_STYLE[i % 3], gain = GAIN_FLOOR + (1 - GAIN_FLOOR) * gains[Math.floor(i / 3)];
+    const g = perspective(i / (LINE_COUNT - 1), K.camera), st = BAND_STYLE[i % 3], gain = GAIN_FLOOR + (1 - GAIN_FLOOR) * gains[Math.floor(i / 3)];
     const shape = blend(lines[i], mix, m, shp[i]);
     const a = amp * gain;   // same wave height as the flat lanes; depth only changes position and width
-    const sx = 1 + (rowWidth(i / (LINE_COUNT - 1), TUNE.backWidth, TUNE.frontWidth) - 1) * ty, x0 = w / 2 - w * sx / 2, y0 = ys[i];
-    const alF = Math.min(1, (st.a + (1 - st.a) * m * 0.6) * TUNE.alpha), alL = 1 - TUNE.depthFade * (1 - g);
+    const sx = 1 + (rowWidth(i / (LINE_COUNT - 1), K.backWidth, K.frontWidth) - 1) * ty, x0 = w / 2 - w * sx / 2, y0 = ys[i];
+    const alF = Math.min(1, (st.a + (1 - st.a) * m * 0.6) * K.alpha), alL = 1 - K.depthFade * (1 - g);
     ctx.beginPath();
     for (let j = 0; j < shape.length; j++) {
       const x = x0 + ((j - frac) / (shape.length - 1)) * w * sx, y = y0 + shape[j] * a;
@@ -155,12 +155,12 @@ export function draw(t) {
     }
     ctx.strokeStyle = m > 0.98 ? palette.merged : bandColor(i);
     ctx.globalAlpha = alF + (alL - alF) * ty;
-    ctx.lineWidth = st.w * TUNE.lineWidth + (TUNE.mergedWidth - st.w * TUNE.lineWidth) * m;
+    ctx.lineWidth = st.w * K.lineWidth + (K.mergedWidth - st.w * K.lineWidth) * m;
     ctx.stroke();
   }
   ctx.globalAlpha = 1;
   if (ty > 0.5) return;   // ponytail: eggs sit on the flat lanes, so skip overlays while tilted (bottom of the page); the knock lives near the top where m is 1
-  for (const fn of overlays) fn(ctx, { w, h, t, p, m, lineY: i => lineY(i, m, h, TUNE.spread) });
+  for (const fn of overlays) fn(ctx, { w, h, t, m, lineY: i => lineY(i, m, h, K.spread) });
 }
 
 function frame(ms) {
@@ -175,13 +175,12 @@ export function init() {
   canvas = document.getElementById('bg');
   bg = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || bg;
   ctx = canvas.getContext('2d');
-  const onScroll = () => { state.p = progress(scrollY, document.documentElement.scrollHeight, innerHeight); if (reduced.matches) draw(0); };   // no rAF loop under reduced motion: repaint the one static frame
-  addEventListener('resize', () => { resize(); onScroll(); }, { passive: true });
-  addEventListener('scroll', onScroll, { passive: true });
+  tweenLook(look, view.goal, TUNE, Infinity);   // start on the current tab's look, no ease-in
+  addEventListener('resize', resize, { passive: true });
   document.addEventListener('visibilitychange', start);
   reduced.addEventListener('change', () => { resize(); start(); });
   onChange(() => {   // reduced motion has no rAF loop: skip the crossfade and paint one static frame
     if (reduced.matches && state.bands && state.bands !== lastBands) { prep(); morph = 1; draw(0); }
   });
-  resize(); onScroll(); draw(0); start();
+  resize(); draw(0); start();
 }
