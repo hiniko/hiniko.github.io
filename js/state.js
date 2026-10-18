@@ -1,6 +1,5 @@
 // js/state.js
 export const state = {
-  p: 0,              // scroll convergence progress 0..1
   mode: 'sines',     // 'sines' | 'silent' | 'live' | 'napping'
   set: null,         // { id, title, tempo, scale, root_note } of the loaded set, or null
   bands: null,       // Array(12) of Float32Array(TUNE.resolution), each normalised to -1..1, order: stem0 low,mid,high, stem1 low,... ; null until loaded

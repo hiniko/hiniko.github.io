@@ -1,4 +1,4 @@
-import { TUNE, DEFAULTS, draw } from '../waves.js';
+import { TUNE, DEFAULTS, draw, view } from '../waves.js';
 import { rebuildBands } from '../audio.js';
 
 // key, label, min, max, step, tooltip
@@ -16,11 +16,7 @@ const KNOBS = [
   ['release', 'gain release', 0.05, 3, 0.05, 'seconds for a line to fall back'],
   ['lineWidth', 'line width', 0.3, 3, 0.1, 'stroke width multiplier'],
   ['mergedWidth', 'merged width', 0.3, 6, 0.1, 'stroke width of the merged line in px'],
-  ['openAt', 'open at', 0.1, 0.9, 0.01, 'scroll position where the 12 lines are fully open; merged above it'],
-  ['openWidth', 'open width', 0.3, 3, 0.05, 'how long the lines stay open around that point'],
   ['alpha', 'opacity', 0.1, 1, 0.05, 'line opacity multiplier'],
-  ['flyFrom', 'fly from', 0.1, 0.95, 0.01, 'scroll position where the lanes start tilting into the landscape (kept past open at)'],
-  ['flyTo', 'fly to', 0.15, 1, 0.01, 'scroll position where the landscape is complete; it stays to the bottom'],
   ['bandShade', 'band shade', 0, 0.8, 0.01, 'colour step between a stem\'s low, mid and high lines'],
   ['camera', 'camera', 0.1, 0.9, 0.01, 'camera distance: further back is flatter with smaller front rows'],
   ['horizon', 'horizon', 0.1, 0.7, 0.01, 'horizon height as a fraction of the page'],
@@ -28,7 +24,8 @@ const KNOBS = [
   ['frontWidth', 'front width', 0.3, 1, 0.01, 'landscape row width nearest you; less than back width makes the trapezoid wider at the back'],
   ['depthFade', 'depth fade', 0, 1, 0.05, 'how much rows fade toward the horizon'],
 ];
-const BOOLS = ['gain', 'fly'];
+const BOOLS = ['gain'];
+const LOOK = ['merge', 'tilt'];   // the per-tab look sliders; they edit view.goal, the active TAB_LOOKS entry
 const RANGE = Object.fromEntries(KNOBS.map(([k, , min, max]) => [k, [min, max]]));
 const dev = /[?&]tune\b/.test(location.search);   // localStorage only under ?tune, so a visitor's mangled page never sticks
 const reduced = matchMedia('(prefers-reduced-motion: reduce)');
@@ -42,6 +39,12 @@ function apply(patch) {
     else if (RANGE[k] && typeof v === 'number' && isFinite(v)) TUNE[k] = Math.min(RANGE[k][1], Math.max(RANGE[k][0], v));
   }
   return true;
+}
+
+function syncLook() {   // the current tab's look: sliders and the copyable TAB_LOOKS line
+  for (const k of LOOK) { const el = root.querySelector(`[data-l=${k}]`); el.value = view.goal[k]; el.parentNode.querySelector('output').textContent = view.goal[k]; }
+  root.querySelector('[data-a=tab]').textContent = view.name;
+  root.querySelector('[data-a=lookjson]').value = `${view.name}: ${JSON.stringify(view.goal)}`;
 }
 
 function sync(fromBox) {
@@ -65,15 +68,18 @@ function build() {
   root.className = 'tune'; root.setAttribute('aria-label', 'Wave knobs');
   root.innerHTML = `<div class="row" style="margin:0"><b style="flex:2;align-self:center">wave knobs</b><button type="button" data-a="collapse" aria-expanded="true">collapse</button></div><div class="body">
     ${KNOBS.map(([k, label, min, max, step, tip]) => `<label title="${tip}"><span>${label}</span><output>${TUNE[k]}</output><input type="range" data-k="${k}" min="${min}" max="${max}" step="${step}"></label>`).join('')}
+    <b title="the current tab's wave look; edits are live. Paste the line into TAB_LOOKS in waves.js">look: <span data-a="tab"></span></b>
+    ${LOOK.map(k => `<label><span>${k}</span><output></output><input type="range" data-l="${k}" min="0" max="1" step="0.01"></label>`).join('')}
+    <input data-a="lookjson" readonly aria-label="this tab's look as a TAB_LOOKS line" style="width:100%;box-sizing:border-box;font:12px ui-monospace,monospace;color:var(--fg);background:#0d0f14;border:1px solid var(--line);border-radius:8px;padding:5px">
     <label class="chk" style="display:flex;gap:8px"><input type="checkbox" data-k="gain"> <span>live loudness gain</span></label>
-    <label class="chk" style="display:flex;gap:8px"><input type="checkbox" data-k="fly"> <span>mid-page flyover</span></label>
     <div class="row"><button type="button" data-a="copy">copy</button><button type="button" data-a="reset">reset</button></div>
     <textarea aria-label="settings JSON: edit or paste to apply" spellcheck="false"></textarea></div>`;
   box = root.querySelector('textarea');
   for (const el of root.querySelectorAll('[data-k]')) inputs[el.dataset.k] = el;
   root.addEventListener('input', e => {
     const k = e.target.dataset.k;
-    if (k) { apply({ [k]: BOOLS.includes(k) ? e.target.checked : +e.target.value }); sync(); }
+    if (e.target.dataset.l) { view.goal[e.target.dataset.l] = +e.target.value; syncLook(); if (reduced.matches) draw(0); }
+    else if (k) { apply({ [k]: BOOLS.includes(k) ? e.target.checked : +e.target.value }); sync(); }
     else if (e.target === box) {
       let v; try { v = JSON.parse(box.value); } catch { v = null; }
       const ok = apply(v);
@@ -92,7 +98,8 @@ function build() {
     }
   });
   document.body.append(root);
-  sync();
+  sync(); syncLook();
+  for (const ev of ['click', 'keyup']) document.addEventListener(ev, () => setTimeout(syncLook));   // a tab switch changes which look the sliders edit
 }
 
 export function toggle() {

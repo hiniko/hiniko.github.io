@@ -9,23 +9,23 @@ export function sineLine(i, n, t) {
   return out;
 }
 
-export function progress(scrollY, docHeight, viewH) {
-  const mid = docHeight - viewH;   // full scroll range: 0 at top, 1 at the very bottom
-  if (mid <= 0) return 1;
-  return Math.min(1, Math.max(0, scrollY / mid));
+// time-based easing step: move `cur` toward `target`, covering ~95% of the gap in 3*tau seconds regardless of frame rate; snaps when close
+export function easeStep(cur, target, dt, tau = 0.27) {
+  const next = cur + (target - cur) * (1 - Math.exp(-dt / tau));
+  return Math.abs(target - next) < 1e-3 ? target : next;
 }
 
 const ease = x => x * x * (3 - 2 * x);   // smoothstep
 
-// merge amount from scroll progress: 1 (merged) at the top, easing to 0 (open) at p = openAt, then 0 for good; width > 1 keeps the lines open longer
-export function mergeAt(p, openAt = 0.5, width = 1) {
-  const u = Math.min(1, Math.max(0, p / openAt));
-  return 1 - Math.sin(Math.PI / 2 * u) ** (1 / width);
-}
-
-// flyover tilt from scroll progress: 0 until `from`, easing to 1 at `to`, then 1 for good
-export function tiltAt(p, from = 0.55, to = 0.85) {
-  return ease(Math.min(1, Math.max(0, (p - from) / (to - from))));
+// ease the live look toward target: numbers ease (easeStep), anything else snaps. Keys the target omits head to base[k];
+// keys with no goal at all stay put. dt = Infinity snaps everything. Returns look.
+export function tweenLook(look, target, base, dt) {
+  for (const k of new Set([...Object.keys(look), ...Object.keys(target)])) {
+    const goal = k in target ? target[k] : base[k];
+    if (goal === undefined) continue;
+    look[k] = typeof goal === 'number' && typeof look[k] === 'number' ? easeStep(look[k], goal, dt) : goal;
+  }
+  return look;
 }
 
 // row depth d (0 = horizon, 1 = at the viewer) -> screen spread 0..1, spaced like 1/z so rows bunch near the horizon

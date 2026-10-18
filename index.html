@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sherman Rose: engineer, musician, toymaker</title>
-  <meta name="description" content="Software engineer. Platform, backend, frontend, games, and whatever else the problem needs. Also music and toys.">
+  <title>Sherman Rose: Projects, music, toys</title>
+  <meta name="description" content="Sherman's personal site and showcase.">
   <link rel="icon" href="/favicon.ico">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="manifest" href="/site.webmanifest">
@@ -17,9 +17,6 @@
 
   <header class="bar glass-bar">
     <a class="logo" href="/">shermanrose.uk</a>
-    <nav aria-label="Sections">
-      <a href="#work">work</a><a href="#music">music</a><a href="#toys">toys</a><a href="/cv/">cv</a>
-    </nav>
     <div id="jukebox" class="jukebox"></div>
   </header>
 
@@ -39,29 +36,30 @@
         <p>With modern tooling the code is the easy part; what matters is sensibility, domain knowledge, imagination and architecture.</p>
         <p>This site, its toys and my GitHub are the evidence. Outside work I make loop-based electronic music.</p>
       </div>
-      <nav class="intro-nav" aria-label="On this page"><a href="#explore">explore</a> · <a href="#work">work</a> · <a href="#music">music</a> · <a href="#toys">toys</a></nav>
-    </aside>
-
-    <main class="content">
       <section id="explore" class="glass panel">
         <h2>Explore</h2>
         <ul id="explore-list" class="explore-list"></ul>
       </section>
+    </aside>
 
-      <section id="work">
-        <h2>Projects</h2>
+    <main class="content">
+      <div id="tabs" class="tabs" role="tablist" aria-label="Sections">
+        <button type="button" role="tab" id="tab-work" aria-controls="work">Projects</button>
+        <button type="button" role="tab" id="tab-music" aria-controls="music">Music</button>
+        <button type="button" role="tab" id="tab-toys" aria-controls="toys">Toys</button>
+      </div>
+
+      <section id="work" role="tabpanel" aria-labelledby="tab-work">
         <div id="projects-grid" class="cards"></div>
         <p class="more"><a href="https://github.com/hiniko">More on GitHub →</a></p>
       </section>
 
-      <section id="music" class="glass panel">
-        <h2>Music</h2>
+      <section id="music" class="glass panel" role="tabpanel" aria-labelledby="tab-music">
         <p>The background visualisation is one of my Ableton mvoe tracks: four stems, split into lows, mids and highs. Unmute the jukebox up top to hear it.</p>
         <p><a href="https://soundcloud.com/hiniko">SoundCloud</a> · <a href="https://musicbox.sherms.uk">the full music box</a></p>
       </section>
 
-      <section id="toys">
-        <h2>Toys</h2>
+      <section id="toys" role="tabpanel" aria-labelledby="tab-toys">
         <div id="toys-grid" class="cards">
           <!-- loop jam hidden until reworked: <a class="card glass" href="/toys/loop-jam/"><b>loop jam</b><p>Launch my loops. Everything stays on the bar.</p></a> -->
           <a class="card glass" href="#" data-action="tune"><b>wave knobs</b><p>Tune the background waveforms live, and share the settings.</p></a>
