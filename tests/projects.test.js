@@ -19,3 +19,12 @@ test('fallback when api failed or repo missing', () => {
   assert.deepEqual(c[1], { name: 'ghost', url: 'https://github.com/hiniko/ghost', description: '', language: null, stars: null });
   assert.equal(cardsFor(['ghost'], repos)[0].stars, null);
 });
+
+test('pages repos link to the live site, user-site repo keeps the repo link', () => {
+  const c = cardsFor(['PSTE', 'hiniko.github.io', 'home'], [
+    { name: 'PSTE', html_url: 'https://github.com/hiniko/PSTE', has_pages: true, homepage: null },
+    { name: 'hiniko.github.io', html_url: 'https://github.com/hiniko/hiniko.github.io', has_pages: true },
+    { name: 'home', html_url: 'https://github.com/hiniko/home', has_pages: false, homepage: 'https://example.com' },
+  ]);
+  assert.deepEqual(c.map(x => x.url), ['https://shermanrose.uk/PSTE/', 'https://github.com/hiniko/hiniko.github.io', 'https://example.com']);
+});
