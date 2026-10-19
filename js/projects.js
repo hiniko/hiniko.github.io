@@ -22,12 +22,12 @@ export async function init() {
   const cards = cardsFor(PINNED, await repos()).map(c => ({ ...c, name: TITLES[c.name] ?? c.name }));
   document.getElementById('projects-grid').innerHTML = cards.map(c => `
     <div class="card glass">
-      <a class="stretch" href="${esc(c.url)}"><b>${esc(c.name)}</b></a>
+      <b>${esc(c.name)}</b>
       ${c.description ? `<p>${esc(c.description)}</p>` : ''}
-      ${c.language || c.stars !== null ? `<div class="meta">
+      <div class="meta">
         ${c.language ? `<span><span class="dot" style="background:${LANG_COLORS[c.language] ?? 'var(--dim)'}"></span>${esc(c.language)}</span>` : ''}
-        ${c.stars !== null ? `<span>★ ${c.stars}</span>` : ''}</div>` : ''}
-      ${c.repo && c.repo !== c.url ? `<div class="links"><a href="${esc(c.url)}">open site ↗</a><a href="${esc(c.repo)}">github</a></div>` : ''}
+        ${c.stars !== null ? `<span>★ ${c.stars}</span>` : ''}
+        <span class="links">${c.url !== (c.repo ?? c.url) ? `<a class="site" href="${esc(c.url)}">open site ↗</a>` : ''}<a href="${esc(c.repo ?? c.url)}">github</a></span></div>
     </div>`).join('');
   return cards;
 }
