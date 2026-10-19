@@ -26,7 +26,6 @@ export async function init() {
       ${c.description ? `<p>${esc(c.description)}</p>` : ''}
       <div class="meta">
         ${c.language ? `<span><span class="dot" style="background:${LANG_COLORS[c.language] ?? 'var(--dim)'}"></span>${esc(c.language)}</span>` : ''}
-        ${c.stars !== null ? `<span>★ ${c.stars}</span>` : ''}
         <span class="links">${c.url !== (c.repo ?? c.url) ? `<a class="site" href="${esc(c.url)}">open site ↗</a>` : ''}<a href="${esc(c.repo ?? c.url)}">github</a></span></div>
     </div>`).join('');
   return cards;
