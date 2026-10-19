@@ -42,7 +42,12 @@ h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 2px; color: var
 .panel p + p { margin-top: 10px; }
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
 .card { display: block; border-radius: 10px; padding: 16px; color: var(--fg); }
-.card:hover { text-decoration: none; border-color: var(--a1); }
+.card { position: relative; } .card:hover { border-color: var(--a1); }
+.card .stretch { color: var(--fg); } .card .stretch::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }   /* whole card opens the main link */
+.card .links { position: relative; display: flex; gap: 8px; margin-top: 12px; font-size: 12px; }   /* above the stretched link */
+.card .links a { padding: 3px 10px; border-radius: 99px; border: 1px solid var(--line); color: var(--dim); }
+.card .links a:first-child { color: #062019; background: var(--a1); border-color: var(--a1); font-weight: 600; }
+.card .links a:hover { text-decoration: none; border-color: var(--a1); color: var(--fg); } .card .links a:first-child:hover { color: #062019; }
 .card p { color: var(--dim); font-size: 14px; margin-top: 6px; }
 .card .meta { display: flex; gap: 12px; font-size: 12px; color: var(--dim); margin-top: 10px; }
 .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 5px; vertical-align: middle; }
